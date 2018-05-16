@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+
+    <script   src="https://code.jquery.com/jquery-3.3.1.min.js"   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="   crossorigin="anonymous"></script>
+
+    <script src="https://cdn.anychart.com/releases/8.0.1/js/anychart-base.min.js"></script>
+
+    <script src="https://cdn.anychart.com/releases/8.0.1/js/anychart-ui.min.js"></script>
+
+    <script src="https://cdn.anychart.com/releases/8.0.1/js/anychart-exports.min.js"></script>
+
+
+    <link rel="stylesheet" href="https://cdn.anychart.com/releases/8.0.1/css/anychart-ui.min.css" />
+
+    <link rel="stylesheet" href="https://cdn.anychart.com/releases/8.0.1/fonts/css/anychart-font.min.css" />
+
+    <title>Empty Bitcoin Blocks Trendt</title>
+    <style>
+        html, body, #container {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+<div id="container"></div>
+<script type="text/javascript">
+    // Retrieving data for graph
+    $.getJSON('https://francescopisu.github.io/data.json', {}, function(dataJQuery) {
+        anychart.onDocumentReady(function () {
+            //console.log(dataJQuery); //debug time
+            // create data set on our data
+            var dataSet = anychart.data.set(dataJQuery);
+            // map data for the first series, take x from the zero column and value from the first column of data set
+            var seriesData_1 = dataSet.mapAs({'x': 0, 'value': 1});
+            // map data for the second series, take x from the zero column and value from the second column of data set
+            var seriesData_2 = dataSet.mapAs({'x': 0, 'value': 2});
+            // create line chart
+            chart = anychart.line();
+            chart.xScroller(true);
+            // adding dollar symbols to yAxis labels
+            chart.yAxis().labels().format('#{%Value}');
+            // turn on chart animation
+            chart.animation(true);
+            // turn on the crosshair
+            chart.crosshair()
+                .enabled(true)
+                .yLabel({enabled: false})
+                .yStroke(null)
+                .xStroke('#cecece')
+                .zIndex(99);
+            chart.yAxis()
+                .title('Blocks Mined')
+                .labels({'padding': [5, 5, 0, 5]});
+            chart.xAxis().title('Year/Month/Day');
+            // set chart title text settings
+            chart.title('Empty Bitcoin Blocks mining-trend over the years');
+            // create first series with mapped data
+            var series_1 = chart.spline(seriesData_1);
+            series_1.name('Total Blocks Mined');
+            series_1.markers().zIndex(100);
+            series_1.hovered().markers()
+                .enabled(true)
+                .type('circle')
+                .size(4);
+            // create second series with mapped data
+            var series_2 = chart.spline(seriesData_2);
+            series_2.name('Empty Blocks Mined');
+            series_2.markers().zIndex(100);
+            series_2.hovered().markers()
+                .enabled(true)
+                .type('circle')
+                .size(4);
+            // turn the legend on
+            chart.legend()
+                .enabled(true)
+                .fontSize(13)
+                .padding([0, 0, 20, 0]);
+            // set container id for the chart
+            chart.container('container');
+            // initiate chart drawing
+            chart.xZoom().setTo(0, 0.3);
+            chart.draw();
+
+        });
+    });
+</script>
+</body>
+</html>
